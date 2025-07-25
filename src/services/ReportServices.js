@@ -110,3 +110,22 @@ export const processReportService = async (cardID, option) => {
   }
 };
 
+export const voteReportService = async (cardID, voteType, userId) => {
+  const report = await Report.findOne({ cardID });
+  if (!report) throw new Error("Report not found");
+
+  // Check if user already voted
+  const existingVote = report.votes.find(v => v.userId.toString() === userId);
+  if (existingVote) throw new Error("User already voted");
+
+  // Add vote
+  report.votes.push({ userId, type: voteType });
+
+  // Calculate trust rate as a fraction (0-1)
+  const upVotes = report.votes.filter(v => v.type === "up").length;
+  const totalVotes = report.votes.length;
+  report.trustRate = totalVotes > 0 ? upVotes / totalVotes : 0;
+
+  await report.save();
+  return { trustRate: report.trustRate, totalVotes, upVotes, votes: report.votes };
+};

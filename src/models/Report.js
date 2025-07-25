@@ -12,6 +12,10 @@ const reportSchema = new mongoose.Schema(
     reporterId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     date: { type: String, required: false },
     status: { type: String, default: "pending" },
+    votes: [{
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    type: { type: String, enum: ["up", "down"] }
+  }],
     trustRate: { type: Number, default: 0 },
     damageRate: { type: Number, default: 0 },
   },

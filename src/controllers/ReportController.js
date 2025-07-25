@@ -1,4 +1,4 @@
-import { createReportService,getApprovedReportsService,searchReportService,getAllReportsService,editReportService,processReportService } from "../services/ReportServices.js";
+import { createReportService,voteReportService,getApprovedReportsService,searchReportService,getAllReportsService,editReportService,processReportService } from "../services/ReportServices.js";
 
 export const createReport = async (req, res, next) => {
   try {
@@ -64,3 +64,13 @@ export const processReport = async (req, res, next) => {
   }
 };
 
+export const voteReport = async (req, res, next) => {
+  try {
+    const { cardID, voteType } = req.body;
+    const userId = req.user.id; // assuming verifyToken sets req.user
+    const result = await voteReportService(cardID, voteType, userId);
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};
