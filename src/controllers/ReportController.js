@@ -66,9 +66,9 @@ export const processReport = async (req, res, next) => {
 
 export const voteReport = async (req, res, next) => {
   try {
-    const { cardID, voteType } = req.body;
-    const userId = req.user.id; // assuming verifyToken sets req.user
-    const result = await voteReportService(cardID, voteType, userId);
+    const { reportId, voteType } = req.body;
+    const userId = req.user.id; 
+    const result = await voteReportService(reportId, voteType, userId);
     res.json(result);
   } catch (err) {
     next(err);

@@ -110,9 +110,9 @@ export const processReportService = async (cardID, option) => {
   }
 };
 
-export const voteReportService = async (cardID, voteType, userId) => {
+export const voteReportService = async (reportId, voteType, userId) => {
 
-  const report = await Report.findOne({ cardID });
+  const report = await Report.findById(reportId); 
   if (!report) throw new CustomError("Report not found", 200);
 
   // Check if user already voted
