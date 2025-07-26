@@ -1,4 +1,5 @@
 import Report from "../models/Report.js";
+import mongoose from "mongoose";
 import { CustomError } from "../middlewares/ErrorMiddleware.js";
 import { ApiResponse } from "../response/ApiResponse.js";
 
@@ -110,14 +111,20 @@ export const processReportService = async (cardID, option) => {
   }
 };
 
-export const voteReportService = async (reportId, voteType, userId) => {
 
-  const report = await Report.findById(reportId); 
-  if (!report) throw new CustomError("Report not found", 200);
+export const voteReportService = async (reportId, voteType, userId) => {
+  // try to treat reportId as ObjectId, otherwise fallback to cardID
+  let report;
+  if (mongoose.Types.ObjectId.isValid(reportId)) {
+    report = await Report.findById(reportId);
+  } else {
+    report = await Report.findOne({ cardID: reportId });
+  }
+  if (!report) throw new CustomError("Report not found", 404);
 
   // Check if user already voted
   const existingVote = report.votes.find(v => v.userId.toString() === userId);
-  if (existingVote) throw new CustomError("User already voted", 200);
+  if (existingVote) throw new CustomError("User already voted", 400);
 
   // Add vote
   report.votes.push({ userId, type: voteType });
