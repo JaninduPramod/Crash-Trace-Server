@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: crash-trace-mongo
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - crash-trace-network
+
+  server:
+    image: yujiro2hanma/crashtrace-server:latest
+    container_name: crash-trace-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=${PORT}
+      - MONGO_URI=${MONGO_URI}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASS=${MAIL_PASS}
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - mongo
+    networks:
+      - crash-trace-network
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  crash-trace-network:
+    driver: bridge
