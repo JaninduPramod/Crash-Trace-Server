@@ -6,7 +6,7 @@ yarn-error.log
 
 # dotenv environment variables
 .env
-.env.*
+
 
 # Logs
 logs/
